@@ -1,0 +1,136 @@
+<!-- TODO:
+    1)  -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Robot Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: #ffffff;
+      color: #111;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .layout {
+      display: flex;
+      height: 100%;
+      width: 100%;
+    }
+
+    /* LEFT: LOG PANEL */
+    .sidebar {
+      width: 260px;
+      border-right: 1px solid #ddd;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .sidebar h1 {
+      font-size: 32px;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    .log-list {
+      list-style: none;
+      font-size: 14px;
+      line-height: 1.4;
+      overflow-y: auto;
+      padding-right: 4px;
+      flex: 1;
+    }
+
+    .log-item {
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #f0f0f0;
+      white-space: pre-wrap;
+    }
+
+    /* RIGHT: IMAGE GRID */
+    .main {
+      flex: 1;
+      padding: 40px 40px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 1fr;
+      gap: 40px;
+      height: 100%;
+    }
+
+    .image-cell {
+      background: #111;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .image-cell::after {
+      content: "";
+      display: block;
+      padding-bottom: 60%; 
+    }
+
+    .image-cell img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h1>logs</h1>
+      <ul class="log-list" id="logList">
+        <li class="log-item">eg: Human detected</li>
+        <li class="log-item">eg: Starting exploring</li>
+      </ul>
+    </aside>
+
+    <main class="main">
+      <div class="grid" id="imageGrid">
+        <div class="image-cell"></div>
+        <div class="image-cell"></div>
+        <div class="image-cell"></div>
+        <div class="image-cell"></div>
+        <div class="image-cell"></div>
+        <div class="image-cell"></div>
+        <div class="image-cell"></div>
+        <div class="image-cell"></div>
+        <div class="image-cell"></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function addLog(message) {
+      const list = document.getElementById("logList");
+      const li = document.createElement("li");
+      li.className = "log-item";
+      li.textContent = message;
+      list.prepend(li); 
+    }
+  </script>
+</body>
+</html>
