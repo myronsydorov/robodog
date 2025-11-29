@@ -1,0 +1,15 @@
+<h2>Select Images from folder: {{ folder }}</h2>
+<form method="post">
+    {% csrf_token %}
+    <div style="display:flex; flex-wrap: wrap;">
+        {% for img in images %}
+            <div style="margin:10px; text-align:center;">
+                <img src="/media/{{ folder }}/{{ img }}" style="width:150px; height:auto;">
+                <br>
+                <input type="checkbox" name="selected_images" value="{{ img }}"> Select
+            </div>
+        {% endfor %}
+    </div>
+
+    <button type="submit">Submit Selection</button>
+</form>
