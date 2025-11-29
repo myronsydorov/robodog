@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Photo</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        #dropzone {
+            border: 3px dashed #999;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            color: #666;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        #dropzone.dragover {
+            border-color: #007bff;
+            background: #eef6ff;
+            color: #007bff;
+        }
+
+        #preview {
+            display: none;
+            width: 100%;
+            max-width: 350px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        #remove-btn {
+            display: none;
+            margin-top: 10px;
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #upload-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+        }
+
+        #error-msg {
+            color: red;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+
+<h1>Upload a Photo</h1>
+
+<form id="uploadForm" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <!-- HIDDEN Django input field -->
+    {{ form.as_p }}
+
+    <!-- Custom drag & drop area -->
+    <div id="dropzone">
+        Drop image here or click to select
+    </div>
+
+    <!-- Image Preview -->
+    <img id="preview" src="#" alt="Preview">
+
+    <!-- Remove image button -->
+    <button id="remove-btn" type="button">Remove image</button>
+
+    <!-- Validation error -->
+    <div id="error-msg"></div>
+
+    <!-- Submit -->
+    <button id="upload-btn" type="submit">Upload</button>
+</form>
+
+<script>
+    const fileInput = document.querySelector('input[type="file"]');
+    const dropzone = document.getElementById("dropzone");
+    const preview = document.getElementById("preview");
+    const removeBtn = document.getElementById("remove-btn");
+    const errorMsg = document.getElementById("error-msg");
+
+    // Allowed file settings
+    const MAX_SIZE_MB = 5;
+    const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+    const MAX_WIDTH = 4000;
+    const MAX_HEIGHT = 4000;
+
+    // -----------------------------
+    // Preview and validation
+    // -----------------------------
+    function validateAndPreview(file) {
+        errorMsg.style.display = "none";
+        errorMsg.textContent = "";
+
+        if (!file) return;
+
+        // Type validation
+        if (!ALLOWED_TYPES.includes(file.type)) {
+            error("Only JPG, PNG and WEBP are allowed.");
+            return;
+        }
+
+        // Size validation
+        if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+            error(`File too large. Max size is ${MAX_SIZE_MB} MB.`);
+            return;
+        }
+
+        // Load image for dimension validation
+        const img = new Image();
+        img.onload = () => {
+
+            if (img.width > MAX_WIDTH || img.height > MAX_HEIGHT) {
+                error(`Image too large. Max dimensions: ${MAX_WIDTH}×${MAX_HEIGHT}px.`);
+                return;
+            }
+
+            // Show preview
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = "block";
+            removeBtn.style.display = "inline-block";
+        };
+
+        img.src = URL.createObjectURL(file);
+    }
+
+    function error(message) {
+        errorMsg.textContent = message;
+        errorMsg.style.display = "block";
+        preview.style.display = "none";
+        removeBtn.style.display = "none";
+        fileInput.value = ""; // clear input
+    }
+
+    // -----------------------------
+    // File input change
+    // -----------------------------
+    fileInput.addEventListener("change", function (e) {
+        validateAndPreview(e.target.files[0]);
+    });
+
+    // -----------------------------
+    // Drag and drop
+    // -----------------------------
+    dropzone.addEventListener("click", () => fileInput.click());
+
+    dropzone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropzone.classList.add("dragover");
+    });
+
+    dropzone.addEventListener("dragleave", () => {
+        dropzone.classList.remove("dragover");
+    });
+
+    dropzone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropzone.classList.remove("dragover");
+
+        const file = e.dataTransfer.files[0];
+        fileInput.files = e.dataTransfer.files; // sync to input field
+        validateAndPreview(file);
+    });
+
+    // -----------------------------
+    // Remove selected image
+    // -----------------------------
+    removeBtn.addEventListener("click", () => {
+        fileInput.value = "";
+        preview.src = "";
+        preview.style.display = "none";
+        removeBtn.style.display = "none";
+        errorMsg.style.display = "none";
+    });
+
+</script>
+
+</body>
+</html>
