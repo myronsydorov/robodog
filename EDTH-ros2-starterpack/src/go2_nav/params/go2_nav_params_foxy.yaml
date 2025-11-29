@@ -1,3 +1,30 @@
+slam_toolbox:
+  ros__parameters:
+    use_sim_time: False        # у тебя реальный робот, не симуляция
+    slam_toolbox_version: 2
+
+    # Фреймы под твой стек
+    odom_frame: "odom"
+    map_frame: "map"
+    base_frame: "base_link"
+
+    # Лазер
+    scan_topic: "/scan"        # мы уже делаем /scan из /lidar_points
+    max_laser_range: 30.0      # реальный диапазон лидара, можешь снизить до 20
+
+    # Частота паблиша TF и карты
+    transform_publish_period: 0.02   # 50 Hz
+    map_update_interval: 2.0         # как часто обновлять карту
+
+    # Параметры движения, чтобы не спамить оптимизацией
+    minimum_travel_distance: 0.1
+    minimum_travel_heading: 0.1
+
+    # Настройки карты
+    resolution: 0.05          # совпадает с costmap resolution
+    mode: "mapping"           # нам нужен режим построения карты
+    enable_interactive_mode: False
+    
 amcl:
   ros__parameters:
     use_sim_time: False
