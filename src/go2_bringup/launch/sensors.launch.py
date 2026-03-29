@@ -215,6 +215,6 @@ def generate_launch_description():
         rviz_node,
         
         # Static transforms
-        # camera_tf,
+        camera_tf,
         lidar_tf,
     ])

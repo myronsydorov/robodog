@@ -162,6 +162,7 @@ def generate_launch_description():
         ],
         remappings=[
             ("cloud_in", "/lidar_points"),
+            ('/scan', '/scan'),
             # выход по умолчанию "scan" нас устраивает
         ],
     )
